@@ -74,16 +74,16 @@
   .seg .s.on{background:var(--blue-bg);color:var(--blue);}
   .seg .s.off{color:#000;}
   .close{position:absolute;width:25px;height:25px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:7;}
-  #f2 .close{top:76px;left:343px;}
-  .cats{position:absolute;top:116px;left:0;width:393px;height:40px;display:flex;align-items:center;padding:0 8px;z-index:4;background:#fff;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  #f2 .close{top:75px;left:14px;}
+  .cats{position:absolute;top:69px;left:0;width:393px;height:40px;display:flex;align-items:center;padding:0 8px 0 46px;z-index:4;background:#fff;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
   .cats::-webkit-scrollbar{display:none;}
-  .cat{flex:0 0 auto;padding:12px 16px;font-size:14px;color:var(--t64);position:relative;white-space:nowrap;}
+  .cat{flex:0 0 auto;padding:12px 10px;font-size:14px;color:var(--t64);position:relative;white-space:nowrap;}
   .cat.on{color:var(--t87);font-weight:590;}
   .cat.on:after{content:"";position:absolute;left:50%;transform:translateX(-50%);bottom:2px;width:40px;height:2px;border-radius:8px;background:#000;}
-  .grid-scroll{position:absolute;top:156px;left:0;right:0;bottom:0;overflow-y:auto;padding:10px 12px 96px;}
+  .grid-scroll{position:absolute;top:112px;left:0;right:0;bottom:0;overflow-y:auto;padding:10px 12px 96px;}
   .grid-scroll::-webkit-scrollbar{display:none;}
-  .masonry{display:flex;gap:10px;}
-  .col{flex:1;display:flex;flex-direction:column;gap:10px;}
+  .masonry{display:flex;gap:6px;}
+  .col{flex:1;display:flex;flex-direction:column;gap:6px;}
   .ph-card{position:relative;border-radius:5px;overflow:hidden;background:#d9d9d9;cursor:pointer;}
   .ph-card img{display:block;width:100%;height:100%;object-fit:cover;}
   .ph-card .cap{position:absolute;left:0;right:0;bottom:0;height:34px;display:flex;align-items:flex-end;padding:6px 11px;background:linear-gradient(to top,rgba(0,0,0,.75),transparent);color:#fff;font-size:12px;}
@@ -370,10 +370,6 @@
       </span>
     </div>
 
-    <div class="seg">
-      <div class="s on seg-img" onclick="setMediaMode('image')">Image</div>
-      <div class="s off seg-vid" onclick="setMediaMode('video')">Video</div>
-    </div>
     <div class="close" onclick="closeSheet()">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 4l10 10M14 4L4 14" stroke="#081021" stroke-width="1.8" stroke-linecap="round"/></svg>
     </div>
@@ -995,6 +991,22 @@
     TP_STORE={}; window._tplKey=null;   // opt3: forget remembered edits on full reset
     var g=document.querySelector('.grid-scroll'); if(g) g.scrollTop=0;
   }
+  // mix image + video templates into one feed (no Image/Video tab); video cards keep their own onclick
+  (function mergeMediaGrids(){
+    var imgGrid=document.getElementById('imgGrid'), vidGrid=document.getElementById('vidGrid');
+    if(!imgGrid||!vidGrid) return;
+    var cols=imgGrid.querySelectorAll('.col');
+    var imgCards=[]; [].forEach.call(cols,function(c){ [].forEach.call(c.querySelectorAll('.ph-card'),function(card){imgCards.push(card);}); });
+    var vidCards=[].slice.call(vidGrid.querySelectorAll('.ph-card'));
+    var merged=[], vi=0;
+    for(var i=0;i<imgCards.length;i++){ merged.push(imgCards[i]); if((i+1)%2===0 && vi<vidCards.length) merged.push(vidCards[vi++]); }
+    while(vi<vidCards.length) merged.push(vidCards[vi++]);
+    cols[0].innerHTML=''; cols[1].innerHTML='';
+    var h=[0,0];
+    function ch(card){ var m=card.className.match(/h(\d+)/); return m?+m[1]:200; }
+    merged.forEach(function(card){ var c=h[0]<=h[1]?0:1; cols[c].appendChild(card); h[c]+=ch(card)+6; });
+    vidGrid.remove();
+  })();
 </script>
 </body>
 </html>
