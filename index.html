@@ -752,8 +752,13 @@
   function closeAlbum(){ document.getElementById('album').classList.remove('show'); }
   function toggleAlbum(cell){
     var src=cell.getAttribute('data-src');
-    var i=albumSel.indexOf(src);
-    if(i>=0) albumSel.splice(i,1); else albumSel.push(src);
+    if(albumReturn==='tpl'){
+      // replacing a single template slot → single-select (pick one)
+      albumSel = (albumSel[0]===src) ? [] : [src];
+    } else {
+      var i=albumSel.indexOf(src);
+      if(i>=0) albumSel.splice(i,1); else albumSel.push(src);
+    }
     renderAlbum();
   }
   function removeAlbum(e,src){ e.stopPropagation(); var i=albumSel.indexOf(src); if(i>=0) albumSel.splice(i,1); renderAlbum(); }
