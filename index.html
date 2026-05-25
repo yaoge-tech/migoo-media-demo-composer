@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Migoo · Media for Claude (Figma restore)</title>
+<style>
+  :root{
+    --black:#081021; --white:#fff;
+    --bubble:#F2F3F7; --blue:#007AFF; --blue-bg:#F5FAFF;
+    --chip-border:#E5E5E5; --act-border:rgba(0,0,0,0.09);
+    --t87:rgba(0,0,0,0.87); --t64:rgba(0,0,0,0.64); --t40:rgba(0,0,0,0.4);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:-apple-system,"SF Pro Text","SF Pro Display",BlinkMacSystemFont,"PingFang SC",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    background:#0e0b1a;background-image:radial-gradient(900px 500px at 18% 0%,#241b46,transparent),radial-gradient(900px 600px at 100% 100%,#3a1e3f,transparent);
+    min-height:100vh;display:flex;align-items:center;justify-content:center;gap:30px;flex-wrap:wrap;padding:24px;color:var(--black);
+  }
+
+  /* phone frame */
+  .phone{
+    width:417px;height:876px;background:#100c20;border-radius:56px;position:relative;padding:12px;
+    box-shadow:0 30px 80px rgba(0,0,0,.55),inset 0 0 0 2px #2a2342;
+  }
+  .stage{position:relative;width:393px;height:852px;border-radius:44px;overflow:hidden;background:#fff;}
+
+  /* ---------- status bar ---------- */
+  .status{position:absolute;top:0;left:0;width:393px;height:59px;display:flex;align-items:center;justify-content:space-between;padding:0 33px 0 32px;z-index:5;}
+  .status .time{font-size:17px;font-weight:600;letter-spacing:-.3px;color:var(--black);width:54px;text-align:center;}
+  .status .ic{display:flex;align-items:center;gap:7px;}
+  .status.light .time{color:#fff;}
+  .status.light svg path,.status.light svg rect{fill:#fff !important;}
+
+  /* ---------- FRAME 1 ---------- */
+  #f1{position:absolute;inset:0;background:#fff;z-index:1;}
+  .nav-title{position:absolute;top:59px;left:0;width:393px;height:56px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:510;letter-spacing:-.2px;color:var(--black);}
+  .mascot{position:absolute;left:24px;top:187px;width:72px;height:72px;}
+  .nav-doc{position:absolute;top:75px;right:16px;width:24px;height:24px;z-index:6;}
+  .bubbles{position:absolute;left:16px;top:131px;width:295px;display:flex;flex-direction:column;gap:20px;}
+  .bubble{width:295px;background:var(--bubble);border-radius:20px;padding:8px 16px;font-size:16px;line-height:1.4;letter-spacing:-.48px;color:#081021;}
+  .chips{position:absolute;left:17px;top:374px;display:flex;flex-direction:column;gap:10px;}
+  .chips .r{display:flex;gap:8px;}
+  .chip{border:1px solid var(--chip-border);border-radius:8px;height:36px;display:flex;align-items:center;padding:0 16px;font-size:12px;color:var(--t87);white-space:nowrap;}
+  .actions{position:absolute;left:16px;top:658px;width:361px;display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;}
+  .actions::-webkit-scrollbar{display:none;}
+  .act{flex:0 0 auto;border:1px solid var(--act-border);border-radius:8px;height:36px;display:flex;align-items:center;gap:4px;padding:0 12px;font-size:14px;color:var(--t87);white-space:nowrap;cursor:pointer;background:#fff;transition:.15s;}
+  .act:active{background:#f4f4f6;}
+  .act.pill{border-radius:100px;height:32px;border-width:.5px;font-weight:510;}
+  .act.primary{border-color:var(--act-border);}
+  .aicon{width:16px;height:16px;display:block;flex:0 0 auto;}
+  .inputbar{position:absolute;left:16px;width:361px;display:flex;align-items:center;gap:10px;background:#fff;border-radius:100px;padding:12px 12px 12px 16px;box-shadow:0 0 16px 0 #eaedfa,0 8px 16px 0 rgba(234,237,250,.4);}
+  #f1 .inputbar{top:706px;}
+  .inputbar .ph{flex:1;font-size:16px;color:var(--t40);}
+  .botbar{position:absolute;bottom:0;left:0;width:393px;border-top:1px solid rgba(0,0,0,.06);background:#fff;padding-top:12px;z-index:6;}
+  .botbar .tabs{display:flex;}
+  .botbar .tab{flex:1;display:flex;align-items:center;justify-content:center;padding:6px 0;}
+  .home-ind{height:34px;display:flex;align-items:center;justify-content:center;}
+  .home-ind .bar{width:144px;height:5px;border-radius:100px;background:#0b1014;margin-top:6px;}
+  .logo24{position:relative;width:24px;height:24px;}
+  .lg-face{position:absolute;left:0;top:.62px;width:24px;height:22.652px;}
+  .lg-eye{position:absolute;top:7.47px;width:4.812px;height:6.406px;}
+  .tab img{display:block;}
+
+  /* ---------- FRAME 2 (bottom sheet) ---------- */
+  .scrim{position:absolute;inset:0;background:rgba(8,16,33,.32);opacity:0;pointer-events:none;transition:.3s;z-index:10;}
+  .scrim.show{opacity:1;pointer-events:auto;}
+  #f2{position:absolute;top:0;left:0;width:100%;height:100%;background:#fff;z-index:11;transform:translateY(100%);transition:transform .36s cubic-bezier(.32,.72,0,1);}
+  #f2.show{transform:translateY(0);}
+  .seg{position:absolute;top:69px;left:0;width:393px;display:flex;justify-content:center;gap:13px;z-index:4;}
+  .seg .s{height:36px;display:flex;align-items:center;padding:0 12px;border-radius:25px;font-size:17px;font-weight:510;line-height:22px;}
+  .seg .s.on{background:var(--blue-bg);color:var(--blue);}
+  .seg .s.off{color:#000;}
+  .close{position:absolute;width:25px;height:25px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:7;}
+  #f2 .close{top:76px;left:343px;}
+  .cats{position:absolute;top:116px;left:0;width:393px;height:40px;display:flex;align-items:center;padding:0 8px;z-index:4;background:#fff;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .cats::-webkit-scrollbar{display:none;}
+  .cat{flex:0 0 auto;padding:12px 16px;font-size:14px;color:var(--t64);position:relative;white-space:nowrap;}
+  .cat.on{color:var(--t87);font-weight:590;}
+  .cat.on:after{content:"";position:absolute;left:50%;transform:translateX(-50%);bottom:2px;width:40px;height:2px;border-radius:8px;background:#000;}
+  .grid-scroll{position:absolute;top:156px;left:0;right:0;bottom:0;overflow-y:auto;padding:10px 12px 96px;}
+  .grid-scroll::-webkit-scrollbar{display:none;}
+  .masonry{display:flex;gap:10px;}
+  .col{flex:1;display:flex;flex-direction:column;gap:10px;}
+  .ph-card{position:relative;border-radius:5px;overflow:hidden;background:#d9d9d9;cursor:pointer;}
+  .ph-card img{display:block;width:100%;height:100%;object-fit:cover;}
+  .ph-card .cap{position:absolute;left:0;right:0;bottom:0;height:34px;display:flex;align-items:flex-end;padding:6px 11px;background:linear-gradient(to top,rgba(0,0,0,.75),transparent);color:#fff;font-size:12px;}
+  .ph-card.h234{height:234px;} .ph-card.h154{height:154px;} .ph-card.h190{height:190px;} .ph-card.h210{height:210px;}
+  #f2 .inputbar{position:absolute;bottom:18px;left:20px;width:353px;}
+
+  /* ---------- FRAME 3 (detail, dark) ---------- */
+  #f3{position:absolute;top:0;left:0;width:100%;height:100%;background:#000;z-index:21;opacity:0;pointer-events:none;transition:opacity .3s;}
+  #f3.show{opacity:1;pointer-events:auto;}
+  #f3 .nav,#vd .nav{position:absolute;top:44px;left:0;width:393px;height:56px;display:flex;align-items:center;padding:0 16px;z-index:5;}
+  #f3 .close,#vd .close{position:static;filter:drop-shadow(0 .5px 1px rgba(0,0,0,.5));}
+  .detail-img{position:absolute;top:114px;left:0;width:393px;height:585px;object-fit:cover;}
+  .detail-scrim{position:absolute;left:0;top:430px;width:393px;height:269px;background:linear-gradient(to top,rgba(0,0,0,.92),rgba(0,0,0,.86) 38%,rgba(0,0,0,.38) 70%,transparent);z-index:1;pointer-events:none;}
+  .detail-info{position:absolute;left:16px;bottom:108px;width:361px;display:flex;flex-direction:column;z-index:2;}
+  .detail-info .ttl{font-size:16px;font-weight:400;line-height:1.4;color:#fff;letter-spacing:-.48px;padding:4px;}
+  .promptbox{background:rgba(255,255,255,.15);border-radius:4px;padding:4px;display:flex;flex-direction:column;gap:2px;}
+  .promptbox p{font-size:14px;font-weight:400;line-height:1.4;color:rgba(255,255,255,.8);letter-spacing:-.42px;padding:0 4px;}
+  .promptbox .thumb{width:40px;height:40px;border-radius:4px;object-fit:cover;margin-left:4px;}
+  .vd-thumbs{display:flex;gap:4px;padding-left:4px;}
+  .vd-thumbs .thumb{margin-left:0;}
+  .makebtn{position:absolute;left:16px;top:760px;width:361px;background:#fff;border-radius:12px;padding:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;line-height:1.4;color:#000;letter-spacing:-.42px;cursor:pointer;}
+  .detail-info{cursor:pointer;}
+
+  /* ===== frame4-6: input flow over detail ===== */
+  #inputFlow{position:absolute;inset:0;z-index:30;display:none;}
+  #inputFlow.show{display:block;}
+  .if-scrim{position:absolute;inset:0;background:transparent;}
+  .ic-card{position:absolute;left:16px;bottom:327px;width:361px;background:#fff;border-radius:20px;box-shadow:0 0 16px #eaedfa,0 8px 16px rgba(234,237,250,.04);z-index:3;padding:12px 12px 12px 16px;display:flex;flex-direction:column;gap:12px;}
+  .ic-imgs{display:flex;gap:8px;align-items:center;}
+  .ic-thumb{width:64px;height:64px;border-radius:12px;overflow:hidden;position:relative;flex:0 0 auto;background:#e9e9ef;cursor:pointer;}
+  .ic-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .ic-sample{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;pointer-events:none;background:rgba(0,0,0,.38);border-radius:12px;}
+  .ic-sample img{width:21px;height:21px;display:block;opacity:1;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.45));}
+  .ic-sample span{font-size:8px;font-weight:700;letter-spacing:-.23px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);line-height:1;}
+  .ic-x{position:absolute;top:3px;right:3px;width:16px;height:16px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;line-height:1;cursor:pointer;}
+  .ic-text{font-size:16px;line-height:1.4;letter-spacing:-.48px;color:rgba(0,0,0,.87);min-height:22px;outline:none;}
+  .ic-text:empty::before{content:"What do you want to create?";color:rgba(0,0,0,.4);}
+  .ic-row{display:flex;align-items:center;justify-content:flex-end;gap:12px;}
+  .ic-row .ico{cursor:pointer;display:block;}
+  .ic-send{width:32px;height:32px;border-radius:100px;background:#1184ff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex:0 0 auto;}
+  .ic-send-img{width:32px;height:32px;cursor:pointer;display:block;flex:0 0 auto;}
+  .ic-row .ico{width:24px;height:24px;}
+  .ic-right{display:flex;align-items:center;gap:12px;}
+  .ic-toggle{display:none;background:rgba(229,229,229,.32);border-radius:18px;height:22px;align-items:center;padding:1px;}
+  .ic-toggle .seg-opt{height:20px;display:flex;align-items:center;padding:0 11px;border-radius:16px;font-size:12px;letter-spacing:-.36px;color:rgba(47,48,51,.78);cursor:pointer;white-space:nowrap;}
+  .ic-toggle .seg-opt.on{background:#F5FAFF;color:#007AFF;}
+  #inputFlow.blank .ic-toggle{display:flex;}
+  #inputFlow.blank .ic-row{justify-content:space-between;}
+
+  /* ===== Album full-screen picker ===== */
+  #album{position:absolute;top:0;left:0;width:100%;height:100%;background:#fff;z-index:40;display:none;flex-direction:column;}
+  #album.show{display:flex;}
+  .al-head{position:relative;height:56px;margin-top:59px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .al-x{position:absolute;left:16px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .al-title{font-size:18px;font-weight:600;color:#081021;letter-spacing:-.3px;}
+  .al-caret{font-size:13px;color:#081021;}
+  .al-banner{display:flex;align-items:center;gap:12px;background:#EAF3FF;padding:12px 16px;flex:0 0 auto;}
+  .al-banner span{flex:1;font-size:13px;line-height:1.35;color:#007AFF;}
+  .al-access{flex:0 0 auto;background:#007AFF;color:#fff;border-radius:10px;padding:9px 16px;font-size:14px;font-weight:600;cursor:pointer;}
+  .al-grid{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:auto;gap:3px;align-content:start;}
+  .al-grid::-webkit-scrollbar{display:none;}
+  .al-add{aspect-ratio:1;background:#f2f3f7;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:#1a1a1a;font-size:13px;font-weight:500;cursor:pointer;}
+  .al-cell{position:relative;aspect-ratio:1;overflow:hidden;cursor:pointer;background:#eee;}
+  .al-cell img{width:100%;height:100%;object-fit:cover;display:block;}
+  .al-ck{position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 4px rgba(0,0,0,.25);background:rgba(0,0,0,.06);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#fff;}
+  .al-cell.sel .al-ck{background:#007AFF;border-color:#fff;}
+  .al-foot{display:none;align-items:center;gap:12px;padding:12px 16px;flex:0 0 auto;border-top:1px solid #eee;background:#fff;}
+  #album.has-sel .al-foot{display:flex;}
+  .al-sel{flex:1;display:flex;gap:8px;overflow-x:auto;}
+  .al-sel::-webkit-scrollbar{display:none;}
+  .al-sel .ce{position:relative;width:56px;height:56px;border-radius:12px;overflow:hidden;flex:0 0 auto;}
+  .al-sel .ce img{width:100%;height:100%;object-fit:cover;display:block;}
+  .al-sel .ce .x{position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;}
+  .al-next{flex:0 0 auto;background:#007AFF;color:#fff;border-radius:14px;padding:13px 26px;font-size:16px;font-weight:600;cursor:pointer;white-space:nowrap;}
+  .kbd{position:absolute;bottom:0;left:0;width:393px;display:block;z-index:2;}
+  #inputFlow.mode-pick .kbd{display:none;}
+  .picker{position:absolute;bottom:0;left:0;width:393px;height:311px;background:#fff;z-index:2;display:none;flex-direction:column;box-shadow:0 -6px 24px rgba(0,0,0,.05);border-radius:20px 20px 0 0;}
+  #inputFlow.mode-pick .picker{display:flex;}
+  .picker-tools{display:flex;gap:8px;padding:16px 16px 8px;}
+  .ptool{flex:1;height:84px;background:#f2f3f7;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;font-size:12px;color:#1a1a1a;font-weight:500;}
+  .ptool.disabled{color:#bcbcc4;pointer-events:none;opacity:.6;}
+  .picker-grid{flex:1;overflow-y:auto;display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:max-content;gap:8px;padding:0 16px;}
+  .picker-grid::-webkit-scrollbar{display:none;}
+  .picker-foot{height:34px;flex:0 0 auto;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;}
+  .picker-foot .bar{width:134px;height:5px;border-radius:100px;background:#0b1014;}
+  .pphoto{aspect-ratio:1;border-radius:8px;overflow:hidden;position:relative;cursor:pointer;background:#eee;}
+  .pphoto img{width:100%;height:100%;object-fit:cover;display:block;}
+  .pbadge{position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:#1184ff;color:#fff;font-size:12px;font-weight:600;display:none;align-items:center;justify-content:center;border:1.5px solid #fff;}
+  .pphoto.sel .pbadge{display:flex;}
+  .pphoto.sel img{filter:brightness(.9);}
+
+  /* ===== frame7: sent chat ===== */
+  #f7{position:absolute;inset:0;background:#fff;z-index:26;display:none;flex-direction:column;}
+  #f7.show{display:flex;}
+  #f7 .chat{position:absolute;top:104px;left:0;right:0;height:548px;padding:8px 16px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  #f7 .chat::-webkit-scrollbar{display:none;}
+  .m-img{align-self:flex-end;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:246px;flex:0 0 auto;}
+  .m-img img{width:80px;height:80px;border-radius:16px;object-fit:cover;display:block;}
+  .m-bubble{align-self:flex-end;max-width:263px;background:#1184ff;color:#fff;font-size:16px;line-height:1.4;letter-spacing:-.3px;padding:11px 16px;border-radius:20px;flex:0 0 auto;}
+  .m-typing{align-self:flex-start;background:#f2f3f7;border-radius:20px;padding:15px 16px;display:flex;gap:5px;flex:0 0 auto;}
+  .m-typing i{width:7px;height:7px;border-radius:50%;background:#b6b6c2;display:block;animation:td 1.1s infinite;}
+  .m-typing i:nth-child(2){animation-delay:.15s}.m-typing i:nth-child(3){animation-delay:.3s}
+  @keyframes td{0%,65%,100%{opacity:.35}30%{opacity:1}}
+  /* generation result */
+  .m-result{display:none;flex-direction:column;gap:14px;align-self:stretch;flex:0 0 auto;}
+  .m-result.show{display:flex;}
+  .r-bubble{align-self:flex-start;background:#f2f3f7;color:#081021;font-size:16px;line-height:1.4;letter-spacing:-.3px;padding:13px 16px;border-radius:20px;}
+  .r-row{display:flex;gap:8px;overflow-x:auto;margin-right:-16px;padding-right:16px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;}
+  .r-row::-webkit-scrollbar{display:none;}
+  .r-row img{flex:0 0 auto;width:240px;height:330px;border-radius:16px;object-fit:cover;display:block;cursor:pointer;scroll-snap-align:start;}
+  .v-card{position:relative;width:240px;border-radius:16px;overflow:hidden;cursor:pointer;align-self:flex-start;}
+  .v-card img{width:240px;height:330px;object-fit:cover;display:block;}
+  .v-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;}
+  .v-play::after{content:"";width:0;height:0;border-style:solid;border-width:9px 0 9px 15px;border-color:transparent transparent transparent #fff;margin-left:3px;}
+  .v-dur{position:absolute;left:12px;bottom:12px;color:#fff;font-size:13px;font-weight:500;letter-spacing:-.2px;text-shadow:0 1px 4px rgba(0,0,0,.55);}
+  #f7 .inputbar{top:706px;}
+  /* full-screen image viewer */
+  #imgViewer{position:absolute;inset:0;background:#000;z-index:40;display:none;}
+  #imgViewer.show{display:block;}
+  #imgViewer .iv-top{position:absolute;top:0;left:0;right:0;height:96px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 16px 14px;z-index:2;}
+  .iv-close{width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .iv-save{color:#fff;font-size:16px;font-weight:510;cursor:pointer;padding:4px 2px;letter-spacing:-.2px;}
+  #imgViewer img{position:absolute;inset:0;margin:auto;max-width:100%;max-height:100%;object-fit:contain;}
+  #imgViewer .iv-play{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:74px;height:74px;border-radius:50%;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:3;}
+  #imgViewer.video .iv-play{display:flex;}
+  #imgViewer .iv-play::after{content:"";width:0;height:0;border-style:solid;border-width:13px 0 13px 21px;border-color:transparent transparent transparent #fff;margin-left:5px;}
+
+  .reset-btn{position:fixed;top:20px;right:20px;z-index:999;background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;backdrop-filter:blur(8px);display:flex;align-items:center;gap:7px;transition:.15s;font-family:inherit;}
+  .reset-btn:hover{background:rgba(255,255,255,.2);}
+  .reset-btn:active{transform:scale(.96);}
+
+  /* ===== Video tab toggle ===== */
+  #f2.vmode .seg-img{background:transparent;color:#000;}
+  #f2.vmode .seg-vid{background:var(--blue-bg);color:var(--blue);}
+  .vid-grid{display:none;}
+  #f2.vmode #imgGrid{display:none;}
+  #f2.vmode #vidGrid{display:flex;}
+  .vplay{position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:2;}
+  .vplay::after{content:"";width:0;height:0;border-style:solid;border-width:4px 0 4px 6.5px;border-color:transparent transparent transparent #fff;margin-left:1.5px;}
+  /* ===== Video detail (frame02) ===== */
+  #vd{position:absolute;top:0;left:0;width:100%;height:100%;background:#000;z-index:22;opacity:0;pointer-events:none;transition:opacity .3s;}
+  #vd.show{opacity:1;pointer-events:auto;}
+  .vd-play{position:absolute;left:50%;top:406px;transform:translate(-50%,-50%);width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;z-index:2;}
+  .vd-play::after{content:"";width:0;height:0;border-style:solid;border-width:11px 0 11px 18px;border-color:transparent transparent transparent #fff;margin-left:4px;}
+  .vd-progress{position:absolute;top:751px;left:0;width:393px;height:1.5px;background:rgba(255,255,255,.28);z-index:2;}
+  .vd-bar{height:100%;background:#fff;width:46%;animation:vdplay 9s linear infinite;}
+  @keyframes vdplay{0%{width:6%}100%{width:100%}}
+  .vd-info{position:absolute;left:16px;bottom:115px;width:361px;display:flex;flex-direction:column;z-index:2;cursor:pointer;}
+  .vd-title{font-size:16px;font-weight:400;line-height:1.4;color:#fff;letter-spacing:-.48px;padding:4px;}
+  .vd-desc{font-size:14px;font-weight:400;line-height:1.4;color:rgba(255,255,255,.8);letter-spacing:-.42px;padding:0 4px;}
+
+  /* ===== template create panel (Make similar) ===== */
+  #tplPanel{position:absolute;inset:0;z-index:31;display:none;}
+  #tplPanel.show{display:block;}
+  .tp-scrim{position:absolute;inset:0;background:transparent;}
+  .tp-sheet{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:20px 20px 0 0;padding:22px 20px 0;display:flex;flex-direction:column;gap:16px;box-shadow:0 -8px 30px rgba(0,0,0,.12);z-index:2;}
+  .tp-title{font-size:17px;font-weight:600;letter-spacing:-.3px;color:#081021;}
+  .tp-thumbs{display:flex;gap:10px;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-right:-20px;padding-right:20px;}
+  .tp-thumbs::-webkit-scrollbar{display:none;}
+  .tp-thumb{width:80px;height:80px;border-radius:14px;overflow:hidden;position:relative;flex:0 0 auto;background:#e9e9ef;cursor:pointer;}
+  .tp-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+  .tp-thumb .tp-sample{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:rgba(0,0,0,.34);pointer-events:none;}
+  .tp-thumb .tp-sample img{width:26px;height:26px;display:block;filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.45));}
+  .tp-thumb .tp-sample span{font-size:9px;font-weight:700;letter-spacing:-.2px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55);line-height:1;}
+  .tp-thumb .tp-x{position:absolute;top:4px;right:4px;width:18px;height:18px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;line-height:1;cursor:pointer;}
+  .tp-add{width:80px;height:80px;border-radius:14px;flex:0 0 auto;background:#f2f3f7;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .tp-text{font-size:15px;line-height:1.4;letter-spacing:-.3px;color:rgba(0,0,0,.87);min-height:30px;max-height:104px;overflow-y:auto;outline:none;background:transparent;border:none;padding:6px 2px;caret-color:var(--blue);}
+  .tp-text:empty::before{content:attr(data-ph);color:rgba(0,0,0,.4);}
+  .tp-pills{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-right:-20px;padding-right:20px;}
+  .tp-pills::-webkit-scrollbar{display:none;}
+  .tp-pill{flex:0 0 auto;display:flex;align-items:center;gap:5px;height:32px;padding:0 12px;border:1px solid var(--chip-border);border-radius:9px;font-size:13px;color:var(--t64);cursor:pointer;white-space:nowrap;background:#fff;}
+  .tp-pill .tp-pill-val{color:#081021;font-weight:510;}
+  .tp-pill .tp-caret{font-size:11px;color:var(--t40);}
+  /* layout wrappers: invisible in card mode (children flow into the sheet) */
+  .tp-field{display:contents;}
+  .tp-controls{display:contents;}
+  .tp-send{display:none;width:32px;height:32px;flex:0 0 auto;cursor:pointer;}
+  .tp-mic{display:none;width:26px;height:26px;flex:0 0 auto;cursor:pointer;}
+  /* ---- composer variant: same framework as the blank-input ic-card (rounded card + soft shadow + send) ---- */
+  .tp-sheet.composer .tp-field{display:flex;flex-direction:column;gap:12px;border-radius:20px;padding:12px 12px 12px 16px;background:#fff;box-shadow:0 0 16px #eaedfa,0 8px 16px rgba(234,237,250,.4);}
+  /* opt3: drop the white sheet backplate + title — the composer card floats directly over the image */
+  .tp-sheet.composer{background:transparent;box-shadow:none;border-radius:0;padding:0 16px 24px;}
+  .tp-sheet.composer .tp-title,.tp-sheet.composer .tp-foot{display:none;}
+  .tp-sheet.composer .tp-text{border:none;background:transparent;border-radius:0;padding:0;min-height:24px;}
+  .tp-sheet.composer .tp-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .tp-sheet.composer .tp-pills{flex:1;min-width:0;margin-right:0;padding-right:0;}
+  .tp-sheet.composer .tp-send{display:block;}
+  .tp-sheet.composer .tp-mic{display:block;}
+  .tp-sheet.composer .tp-create{display:none;}
+  /* video has 3 setting chips — give them their own full-width row, send drops to bottom-right */
+  .tp-sheet.composer.tp-multi .tp-controls{flex-direction:column;align-items:stretch;}
+  .tp-sheet.composer.tp-multi .tp-pills{flex:none;width:100%;}
+  .tp-sheet.composer.tp-multi .tp-send{align-self:flex-end;}
+  .tp-create{margin-top:2px;background:#081021;color:#fff;border-radius:100px;height:52px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;letter-spacing:-.2px;cursor:pointer;}
+  .tp-create:active{opacity:.85;}
+  .tp-foot{height:34px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;}
+  .tp-foot .bar{width:134px;height:5px;border-radius:100px;background:#0b1014;}
+  .tp-menu{position:absolute;background:#fff;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.18);padding:6px;display:none;flex-direction:column;gap:2px;z-index:5;min-width:110px;}
+  .tp-menu.show{display:flex;}
+  .tp-menu .tp-opt{padding:9px 14px;border-radius:9px;font-size:15px;color:#081021;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .tp-menu .tp-opt:active{background:#f4f4f6;}
+  .tp-menu .tp-opt.on{color:var(--blue);font-weight:600;}
+  /* while the create panel is open, hide the detail frame's redundant caption/CTA behind it */
+  .stage.tpl-open .detail-info,.stage.tpl-open .vd-info,.stage.tpl-open .makebtn{display:none;}
+  /* tapping the text field raises a (faux) keyboard and lifts the sheet above it */
+  .tp-kbd{position:absolute;left:0;bottom:0;width:393px;display:none;z-index:4;}
+  #tplPanel.kbd-up .tp-kbd{display:block;}
+  #tplPanel.kbd-up .tp-sheet{bottom:311px;padding-bottom:16px;}
+  #tplPanel.kbd-up .tp-foot{display:none;}
+</style>
+</head>
+<body>
+
+<button class="reset-btn" onclick="resetDemo()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 11a8 8 0 1 0-.7 4.3" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M20 4v6h-6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Reset</button>
+
+<div class="phone">
+ <div class="stage">
+
+  <!-- ============ FRAME 1 : HOME ============ -->
+  <div id="f1">
+    <div class="status">
+      <span class="time">9:41</span>
+      <span class="ic">
+        <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="0.8" fill="#081021"/><rect x="5" y="5" width="3" height="7" rx="0.8" fill="#081021"/><rect x="10" y="2" width="3" height="10" rx="0.8" fill="#081021"/><rect x="15" y="0" width="3" height="12" rx="0.8" fill="#081021"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12"><circle cx="8" cy="10.5" r="1.4" fill="#081021"/><path d="M4.2 7.5A5.4 5.4 0 018 6a5.4 5.4 0 013.8 1.5L13 6.3A7.4 7.4 0 008 4.3 7.4 7.4 0 003 6.3L4.2 7.5z" fill="#081021"/><path d="M1 4.5A10 10 0 018 2a10 10 0 017 2.5l1.2-1.2A11.8 11.8 0 008 .3 11.8 11.8 0 00.8 3.3L1 4.5z" fill="#081021"/></svg>
+        <svg width="26" height="13" viewBox="0 0 26 13"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#081021" stroke-opacity="0.35" fill="none"/><rect x="2" y="2" width="18" height="9" rx="2" fill="#081021"/><path d="M24 4v5c1-.4 1.5-1.3 1.5-2.5S25 4.4 24 4z" fill="#081021" fill-opacity="0.4"/></svg>
+      </span>
+    </div>
+    <div class="nav-title">Migoo</div>
+    <div class="nav-doc">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6.5 3h6.7L18 7.8V20a1 1 0 0 1-1 1H6.5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" stroke="#081021" stroke-width="1.5" stroke-linejoin="round"/><path d="M13 3v5h5" stroke="#081021" stroke-width="1.5" stroke-linejoin="round"/></svg>
+    </div>
+
+    <div class="bubbles">
+      <div class="bubble">Boom, we&rsquo;re synced! Mind if I take a quick look around? While I do&mdash;what&rsquo;s the mood? Conquer or chill?</div>
+      <div class="bubble">It&rsquo;s a classic misty Seattle morning with some light rain in the forecast. Are you planning to stay cozy indoors today, or should I help you find a good spot to work from?</div>
+    </div>
+
+    <!-- action row -->
+    <div class="actions">
+      <div class="act primary" onclick="openSheet()"><img class="aicon" src="assets/migoo-media/ai-creation.svg" alt="">AI Creation</div>
+      <div class="act"><img class="aicon" src="assets/migoo-media/handle-mails.svg" alt="">Handle Mails</div>
+      <div class="act"><img class="aicon" src="assets/migoo-media/writing.svg" alt="">Writing</div>
+      <div class="act"><img class="aicon" src="assets/migoo-media/deep-analysis.svg" alt="">Deep Analysis</div>
+      <div class="act pill"><img class="aicon" src="assets/migoo-media/life-admin.svg" alt="">Life Admin</div>
+    </div>
+
+    <!-- input bar -->
+    <div class="inputbar">
+      <span class="ph">Anything on your mind?</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 11.4336C18.5523 11.4336 19 11.8813 19 12.4336C19 15.7584 16.3266 18.3772 13 18.8203V19.7148H14.1436C14.6956 19.7151 15.1436 20.1627 15.1436 20.7148C15.1436 21.267 14.6956 21.7146 14.1436 21.7148H9.85742C9.30514 21.7148 8.85742 21.2671 8.85742 20.7148C8.85742 20.1626 9.30514 19.7148 9.85742 19.7148H11V18.8203C7.67339 18.3772 5 15.7584 5 12.4336C5 11.8813 5.44772 11.4336 6 11.4336C6.55228 11.4336 7 11.8813 7 12.4336C7 14.8062 9.14675 16.8877 12 16.8877C14.8532 16.8877 17 14.8062 17 12.4336C17 11.8813 17.4477 11.4336 18 11.4336ZM12.001 1.57031C14.4467 1.57039 16.4297 3.55324 16.4297 5.99902V10.9512C16.4297 13.397 14.4467 15.3798 12.001 15.3799C9.55514 15.3799 7.57227 13.397 7.57227 10.9512V5.99902C7.57227 3.55319 9.55514 1.57031 12.001 1.57031ZM12.001 3.57031C10.6597 3.57031 9.57227 4.65776 9.57227 5.99902V10.9512C9.57227 12.2924 10.6597 13.3799 12.001 13.3799C13.3422 13.3798 14.4297 12.2924 14.4297 10.9512V5.99902C14.4297 4.65781 13.3422 3.57039 12.001 3.57031Z" fill="#1F1F1F"/></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="11" width="10" height="2" rx="1" fill="#1F1F1F"/><rect x="13" y="7" width="10" height="2" rx="1" transform="rotate(90 13 7)" fill="#1F1F1F"/><circle cx="12" cy="12" r="9" stroke="#1F1F1F" stroke-width="2"/></svg>
+    </div>
+
+    <!-- bottom bar -->
+    <div class="botbar">
+      <div class="tabs">
+        <div class="tab">
+          <div class="logo24">
+            <img class="lg-face" src="assets/migoo-media/face.svg" alt="">
+            <img class="lg-eye" style="left:6.13px" src="assets/migoo-media/eye.svg" alt="">
+            <img class="lg-eye" style="left:13.06px" src="assets/migoo-media/eye.svg" alt="">
+          </div>
+        </div>
+        <div class="tab">
+          <img src="assets/migoo-media/friend.svg" width="24" height="24" alt="">
+        </div>
+      </div>
+      <div class="home-ind"><div class="bar"></div></div>
+    </div>
+  </div>
+
+  <!-- scrim behind sheet -->
+  <div class="scrim" id="scrim" onclick="closeSheet()"></div>
+
+  <!-- ============ FRAME 2 : MEDIA SHEET ============ -->
+  <div id="f2">
+    <div class="status">
+      <span class="time">9:41</span>
+      <span class="ic">
+        <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="0.8" fill="#081021"/><rect x="5" y="5" width="3" height="7" rx="0.8" fill="#081021"/><rect x="10" y="2" width="3" height="10" rx="0.8" fill="#081021"/><rect x="15" y="0" width="3" height="12" rx="0.8" fill="#081021"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12"><circle cx="8" cy="10.5" r="1.4" fill="#081021"/><path d="M4.2 7.5A5.4 5.4 0 018 6a5.4 5.4 0 013.8 1.5L13 6.3A7.4 7.4 0 008 4.3 7.4 7.4 0 003 6.3L4.2 7.5z" fill="#081021"/><path d="M1 4.5A10 10 0 018 2a10 10 0 017 2.5l1.2-1.2A11.8 11.8 0 008 .3 11.8 11.8 0 00.8 3.3L1 4.5z" fill="#081021"/></svg>
+        <svg width="26" height="13" viewBox="0 0 26 13"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#081021" stroke-opacity="0.35" fill="none"/><rect x="2" y="2" width="18" height="9" rx="2" fill="#081021"/><path d="M24 4v5c1-.4 1.5-1.3 1.5-2.5S25 4.4 24 4z" fill="#081021" fill-opacity="0.4"/></svg>
+      </span>
+    </div>
+
+    <div class="seg">
+      <div class="s on seg-img" onclick="setMediaMode('image')">Image</div>
+      <div class="s off seg-vid" onclick="setMediaMode('video')">Video</div>
+    </div>
+    <div class="close" onclick="closeSheet()">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 4l10 10M14 4L4 14" stroke="#081021" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </div>
+
+    <div class="cats">
+      <div class="cat on">For You</div>
+      <div class="cat">Trending</div>
+      <div class="cat">Portrait</div>
+      <div class="cat">Anime</div>
+      <div class="cat">Cinematic</div>
+      <div class="cat">Pets</div>
+      <div class="cat">Travel</div>
+    </div>
+
+    <div class="grid-scroll">
+      <div class="masonry" id="imgGrid">
+        <div class="col">
+          <div class="ph-card h234" onclick="openDetail(this)" data-img="assets/migoo-media/wanderlust.png" data-thumb="assets/migoo-media/src/m1.png" data-title="Wanderlust" data-prompt="Golden-hour light through the window, warm film tones, quiet wanderer mood"><img src="assets/migoo-media/wanderlust.png" alt=""><div class="cap">Wanderlust</div></div>
+          <div class="ph-card h154" onclick="openDetail(this)" data-img="assets/migoo-media/shadow.png" data-thumb="" data-title="Old school Shadow Puppetry" data-prompt="Hand-cut paper silhouettes under warm lamplight, vintage shadow-play storytelling"><img src="assets/migoo-media/shadow.png" alt=""><div class="cap">Old school Shadow Puppetry</div></div>
+          <div class="ph-card h234" onclick="openDetail(this)" data-img="assets/migoo-media/bear.png" data-thumb="assets/migoo-media/src/m5.png" data-title="Curious Little Bear" data-prompt="Cute 3D cartoon bear, soft studio lighting, playful Pixar-style render"><img src="assets/migoo-media/bear.png" alt=""><div class="cap">Curious Little Bear</div></div>
+          <div class="ph-card h190" onclick="openDetail(this)" data-img="assets/migoo-media/tpl/anime.jpg" data-thumb="assets/migoo-media/tpl/srcwoman.jpg" data-title="Ghibli Daydream" data-prompt="Soft hand-painted anime scenery, warm Ghibli-style light and drifting clouds"><img src="assets/migoo-media/tpl/anime.jpg" alt=""><div class="cap">Ghibli Daydream</div></div>
+          <div class="ph-card h234" onclick="openDetail(this)" data-img="assets/migoo-media/tpl/oilpaint.jpg" data-thumb="assets/migoo-media/tpl/srcwoman.jpg" data-title="Oil Portrait" data-prompt="Rich oil-painting brushstrokes, classical portrait lighting"><img src="assets/migoo-media/tpl/oilpaint.jpg" alt=""><div class="cap">Oil Portrait</div></div>
+          <div class="ph-card h154" onclick="openDetail(this)" data-img="assets/migoo-media/tpl/pixelart.jpg" data-thumb="assets/migoo-media/tpl/srcman.jpg" data-notext="1" data-title="Pixel Hero" data-prompt="Retro 8-bit pixel art, vibrant game-sprite palette"><img src="assets/migoo-media/tpl/pixelart.jpg" alt=""><div class="cap">Pixel Hero</div></div>
+          <div class="ph-card h210" onclick="openDetail(this)" data-img="assets/migoo-media/tpl/clay.jpg" data-thumb="assets/migoo-media/thumb.png" data-title="Clay Mini World" data-prompt="Cute claymation figures, soft stop-motion studio light"><img src="assets/migoo-media/tpl/clay.jpg" alt=""><div class="cap">Clay Mini World</div></div>
+        </div>
+        <div class="col">
+          <div class="ph-card h234" onclick="openDetail(this)" data-img="assets/migoo-media/pose.png" data-thumb="assets/migoo-media/thumb.png" data-title="Pose like Euphoria" data-prompt="Dreamy neon lighting, glittered makeup, and moody cinematic vibes"><img src="assets/migoo-media/pose.png" alt=""><div class="cap">Pose like Euphoria</div></div>
+          <div class="ph-card h234" onclick="openDetail(this)" data-img="assets/migoo-media/sketch.png" data-thumb="assets/migoo-media/src/m4.png" data-title="Sketch Self-portrait" data-prompt="Fine graphite pencil sketch, soft cross-hatching, expressive hand-drawn portrait"><img src="assets/migoo-media/sketch.png" alt=""><div class="cap">Sketch Self-portrait</div></div>
+          <div class="ph-card h190" onclick="openDetail(this)" data-img="assets/migoo-media/creature.png" data-thumb="assets/migoo-media/src/m6.png" data-title="Fuzzy Little Monster" data-prompt="Fluffy pink monster with googly eyes, quirky felt stop-motion texture"><img src="assets/migoo-media/creature.png" alt=""><div class="cap">Fuzzy Little Monster</div></div>
+          <div class="ph-card h154" onclick="openDetail(this)" data-img="assets/migoo-media/tpl/cyberpunk.jpg" data-thumb="assets/migoo-media/tpl/srcman.jpg" data-notext="1" data-title="Cyberpunk Neon" data-prompt="Neon-soaked cyberpunk city, moody rain reflections"><img src="assets/migoo-media/tpl/cyberpunk.jpg" alt=""><div class="cap">Cyberpunk Neon</div></div>
+          <div class="ph-card h234" onclick="openDetail(this)" data-img="assets/migoo-media/tpl/watercolor.jpg" data-thumb="assets/migoo-media/tpl/srcman.jpg" data-title="Watercolor Wash" data-prompt="Loose watercolor washes, soft bleeding edges on textured paper"><img src="assets/migoo-media/tpl/watercolor.jpg" alt=""><div class="cap">Watercolor Wash</div></div>
+          <div class="ph-card h210" onclick="openDetail(this)" data-img="assets/migoo-media/tpl/popart.jpg" data-thumb="assets/migoo-media/tpl/srcman.jpg" data-notext="1" data-title="Pop Art Punch" data-prompt="Bold pop-art halftone dots, high-contrast comic colors"><img src="assets/migoo-media/tpl/popart.jpg" alt=""><div class="cap">Pop Art Punch</div></div>
+          <div class="ph-card h234" onclick="openDetail(this)" data-img="assets/migoo-media/tpl/vintage.jpg" data-thumb="assets/migoo-media/tpl/srcwoman.jpg" data-title="Retro Film 35mm" data-prompt="Grainy 35mm film look, faded retro color palette"><img src="assets/migoo-media/tpl/vintage.jpg" alt=""><div class="cap">Retro Film 35mm</div></div>
+        </div>
+      </div>
+      <div class="masonry vid-grid" id="vidGrid">
+        <div class="col">
+          <div class="ph-card h234 vcard" onclick="openVideoDetail(this)" data-img="assets/migoo-media/video/cafe.png" data-title="Rainy Café Mornings" data-desc="A rainy morning seen from a candlelit café — warm golden light, soft reflections on wet glass, and the gentle patter of rain."><img src="assets/migoo-media/video/cafe.png" alt=""><span class="vplay"></span><div class="cap">Rainy Café Mornings</div></div>
+          <div class="ph-card h154 vcard" onclick="openVideoDetail(this)" data-img="assets/migoo-media/video/puppies.png" data-thumb="assets/migoo-media/ui/corgi.jpg" data-thumbs="assets/migoo-media/ui/corgi.jpg,assets/migoo-media/src/m5.png,assets/migoo-media/src/m6.png" data-notext="1" data-title="Fluffy Squad" data-desc="A tumble of fluffy puppies, playful and warm in soft natural daylight."><img src="assets/migoo-media/video/puppies.png" alt=""><span class="vplay"></span><div class="cap">Fluffy Squad</div></div>
+          <div class="ph-card h234 vcard" onclick="openVideoDetail(this)" data-img="assets/migoo-media/video/eye.png" data-title="Macro Eye" data-desc="Extreme macro of an eye — glittering iris detail and a slow, hypnotic blink."><img src="assets/migoo-media/video/eye.png" alt=""><span class="vplay"></span><div class="cap">Macro Eye</div></div>
+        </div>
+        <div class="col">
+          <div class="ph-card h234 vcard" onclick="openVideoDetail(this)" data-img="assets/migoo-media/video/portrait.png" data-title="Cinematic Portrait" data-desc="Moody cinematic close-up — soft key light, shallow depth of field and a slow, lingering gaze."><img src="assets/migoo-media/video/portrait.png" alt=""><span class="vplay"></span><div class="cap">Cinematic Portrait</div></div>
+          <div class="ph-card h234 vcard" onclick="openVideoDetail(this)" data-img="assets/migoo-media/video/paint.png" data-title="Paint Splash Portrait" data-desc="Bold paint-splash portrait — vivid strokes of color bursting across the face."><img src="assets/migoo-media/video/paint.png" alt=""><span class="vplay"></span><div class="cap">Paint Splash Portrait</div></div>
+          <div class="ph-card h234 vcard" onclick="openVideoDetail(this)" data-img="assets/migoo-media/video/doodle.png" data-title="Doodle World" data-desc="Hand-drawn doodle world — playful sketches springing to life."><img src="assets/migoo-media/video/doodle.png" alt=""><span class="vplay"></span><div class="cap">Doodle World</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="inputbar" onclick="openBlankInput()">
+      <span class="ph">What do you want to create？</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 11.4336C18.5523 11.4336 19 11.8813 19 12.4336C19 15.7584 16.3266 18.3772 13 18.8203V19.7148H14.1436C14.6956 19.7151 15.1436 20.1627 15.1436 20.7148C15.1436 21.267 14.6956 21.7146 14.1436 21.7148H9.85742C9.30514 21.7148 8.85742 21.2671 8.85742 20.7148C8.85742 20.1626 9.30514 19.7148 9.85742 19.7148H11V18.8203C7.67339 18.3772 5 15.7584 5 12.4336C5 11.8813 5.44772 11.4336 6 11.4336C6.55228 11.4336 7 11.8813 7 12.4336C7 14.8062 9.14675 16.8877 12 16.8877C14.8532 16.8877 17 14.8062 17 12.4336C17 11.8813 17.4477 11.4336 18 11.4336ZM12.001 1.57031C14.4467 1.57039 16.4297 3.55324 16.4297 5.99902V10.9512C16.4297 13.397 14.4467 15.3798 12.001 15.3799C9.55514 15.3799 7.57227 13.397 7.57227 10.9512V5.99902C7.57227 3.55319 9.55514 1.57031 12.001 1.57031ZM12.001 3.57031C10.6597 3.57031 9.57227 4.65776 9.57227 5.99902V10.9512C9.57227 12.2924 10.6597 13.3799 12.001 13.3799C13.3422 13.3798 14.4297 12.2924 14.4297 10.9512V5.99902C14.4297 4.65781 13.3422 3.57039 12.001 3.57031Z" fill="#1F1F1F"/></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="11" width="10" height="2" rx="1" fill="#1F1F1F"/><rect x="13" y="7" width="10" height="2" rx="1" transform="rotate(90 13 7)" fill="#1F1F1F"/><circle cx="12" cy="12" r="9" stroke="#1F1F1F" stroke-width="2"/></svg>
+    </div>
+  </div>
+
+  <!-- ============ FRAME 3 : DETAIL ============ -->
+  <div id="f3">
+    <div class="status light">
+      <span class="time">9:41</span>
+      <span class="ic">
+        <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="0.8" fill="#fff"/><rect x="5" y="5" width="3" height="7" rx="0.8" fill="#fff"/><rect x="10" y="2" width="3" height="10" rx="0.8" fill="#fff"/><rect x="15" y="0" width="3" height="12" rx="0.8" fill="#fff"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12"><circle cx="8" cy="10.5" r="1.4" fill="#fff"/><path d="M4.2 7.5A5.4 5.4 0 018 6a5.4 5.4 0 013.8 1.5L13 6.3A7.4 7.4 0 008 4.3 7.4 7.4 0 003 6.3L4.2 7.5z" fill="#fff"/><path d="M1 4.5A10 10 0 018 2a10 10 0 017 2.5l1.2-1.2A11.8 11.8 0 008 .3 11.8 11.8 0 00.8 3.3L1 4.5z" fill="#fff"/></svg>
+        <svg width="26" height="13" viewBox="0 0 26 13"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#fff" stroke-opacity="0.5" fill="none"/><rect x="2" y="2" width="18" height="9" rx="2" fill="#fff"/><path d="M24 4v5c1-.4 1.5-1.3 1.5-2.5S25 4.4 24 4z" fill="#fff" fill-opacity="0.5"/></svg>
+      </span>
+    </div>
+    <div class="nav">
+      <div class="close" onclick="closeDetail()">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M5 5l12 12M17 5L5 17" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+
+    <img class="detail-img" src="assets/migoo-media/detail-pose.png" alt="" />
+    <div class="detail-scrim"></div>
+
+    <div class="detail-info" onclick="useTemplate()">
+      <div class="ttl">Pose like Euphoria</div>
+      <div class="promptbox">
+        <img class="thumb" src="assets/migoo-media/thumb.png" alt="" />
+        <p>Dreamy neon lighting, glittered makeup, and moody cinematic vibes</p>
+      </div>
+    </div>
+    <div class="makebtn" onclick="useTemplate()">Make similar</div>
+  </div>
+
+  <!-- ============ VIDEO DETAIL (frame02) ============ -->
+  <div id="vd">
+    <div class="status light">
+      <span class="time">9:41</span>
+      <span class="ic">
+        <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="0.8" fill="#fff"/><rect x="5" y="5" width="3" height="7" rx="0.8" fill="#fff"/><rect x="10" y="2" width="3" height="10" rx="0.8" fill="#fff"/><rect x="15" y="0" width="3" height="12" rx="0.8" fill="#fff"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12"><circle cx="8" cy="10.5" r="1.4" fill="#fff"/><path d="M4.2 7.5A5.4 5.4 0 018 6a5.4 5.4 0 013.8 1.5L13 6.3A7.4 7.4 0 008 4.3 7.4 7.4 0 003 6.3L4.2 7.5z" fill="#fff"/><path d="M1 4.5A10 10 0 018 2a10 10 0 017 2.5l1.2-1.2A11.8 11.8 0 008 .3 11.8 11.8 0 00.8 3.3L1 4.5z" fill="#fff"/></svg>
+        <svg width="26" height="13" viewBox="0 0 26 13"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#fff" stroke-opacity="0.5" fill="none"/><rect x="2" y="2" width="18" height="9" rx="2" fill="#fff"/><path d="M24 4v5c1-.4 1.5-1.3 1.5-2.5S25 4.4 24 4z" fill="#fff" fill-opacity="0.5"/></svg>
+      </span>
+    </div>
+    <div class="nav">
+      <div class="close" onclick="closeVd()">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M5 5l12 12M17 5L5 17" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <img class="detail-img" id="vdPoster" src="assets/migoo-media/video/cafe.png" alt="" />
+    <div class="detail-scrim"></div>
+    <div class="vd-play"></div>
+    <div class="vd-progress"><div class="vd-bar"></div></div>
+    <div class="vd-info" onclick="useVideoTemplate()">
+      <div class="vd-title" id="vdTitle">Rainy Café Mornings</div>
+      <div class="promptbox">
+        <div class="vd-thumbs" id="vdThumbs" style="display:none"></div>
+        <p id="vdDesc">A rainy morning seen from a candlelit café — warm golden light, soft reflections on wet glass, and the gentle patter of rain.</p>
+      </div>
+    </div>
+    <div class="makebtn" onclick="useVideoTemplate()">Make similar</div>
+  </div>
+
+  <!-- ============ FRAME 4/5/6 : INPUT FLOW (over detail) ============ -->
+  <div id="inputFlow">
+    <div class="if-scrim" onclick="closeInput()"></div>
+    <div class="ic-card">
+      <div class="ic-imgs" id="icImgs"></div>
+      <div class="ic-text" id="icText" contenteditable="true" spellcheck="false" onclick="showKbd()"></div>
+      <div class="ic-row">
+        <div class="ic-toggle">
+          <div class="seg-opt on" onclick="setCreateType(this)">Image</div>
+          <div class="seg-opt" onclick="setCreateType(this)">Video</div>
+        </div>
+        <div class="ic-right">
+          <img class="ico" src="assets/migoo-media/ui/mic.png" width="24" height="24" alt="">
+          <img class="ico" onclick="togglePanel()" src="assets/migoo-media/ui/add.png" width="24" height="24" alt="">
+          <img class="ic-send-img" onclick="sendMsg()" src="assets/migoo-media/ui/send.png" width="32" height="32" alt="">
+        </div>
+      </div>
+    </div>
+    <img class="kbd" src="assets/migoo-media/ui/keyboard.png" alt="" />
+    <div class="picker">
+      <div class="picker-tools">
+        <div class="ptool"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="18" height="13" rx="2.5" stroke="#1a1a1a" stroke-width="1.6"/><path d="M8.5 7l1.2-2.2h4.6L15.5 7" stroke="#1a1a1a" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="13.5" r="3.2" stroke="#1a1a1a" stroke-width="1.6"/></svg>Camera</div>
+        <div class="ptool"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5" stroke="#1a1a1a" stroke-width="1.6"/><circle cx="8.5" cy="9.5" r="1.6" fill="#1a1a1a"/><path d="m5 17 4.5-4.5 3.5 3.5 3-2.5 3 3" stroke="#1a1a1a" stroke-width="1.6" stroke-linejoin="round"/></svg>Photo</div>
+        <div class="ptool disabled"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M18.5 11 12 17.5a4 4 0 0 1-5.6-5.6l7-7a2.6 2.6 0 0 1 3.7 3.7l-7 7a1.2 1.2 0 0 1-1.7-1.7l6.1-6.1" stroke="#bcbcc4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Attachment</div>
+        <div class="ptool disabled"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 13 11 7l3 3-6 6H5v-3Z" stroke="#bcbcc4" stroke-width="1.5" stroke-linejoin="round"/><path d="M13.5 2.5 14 4l1.5.5L14 5l-.5 1.5L13 5l-1.5-.5L13 4l.5-1.5Z" fill="#bcbcc4"/><path d="M18.5 8 19 9.3l1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5.5-1.3Z" fill="#bcbcc4"/></svg>Skills</div>
+      </div>
+      <div class="picker-grid" id="pgrid">
+        <div class="pphoto" onclick="selectPhoto(this)"><img src="assets/migoo-media/ui/corgi.jpg" alt=""><span class="pbadge"></span></div>
+        <div class="pphoto" onclick="selectPhoto(this)"><img src="assets/migoo-media/ui/food1.jpg" alt=""><span class="pbadge"></span></div>
+        <div class="pphoto" onclick="selectPhoto(this)"><img src="assets/migoo-media/ui/food2.jpg" alt=""><span class="pbadge"></span></div>
+        <div class="pphoto" onclick="selectPhoto(this)"><img src="assets/migoo-media/ui/food3.jpg" alt=""><span class="pbadge"></span></div>
+        <div class="pphoto" onclick="selectPhoto(this)"><img src="assets/migoo-media/ui/food4.jpg" alt=""><span class="pbadge"></span></div>
+        <div class="pphoto" onclick="selectPhoto(this)"><img src="assets/migoo-media/ui/food5.jpg" alt=""><span class="pbadge"></span></div>
+        <div class="pphoto" onclick="selectPhoto(this)"><img src="assets/migoo-media/ui/food6.jpg" alt=""><span class="pbadge"></span></div>
+        <div class="pphoto" onclick="selectPhoto(this)"><img src="assets/migoo-media/ui/food7.jpg" alt=""><span class="pbadge"></span></div>
+        <div class="pphoto" onclick="selectPhoto(this)"><img src="assets/migoo-media/ui/food8.jpg" alt=""><span class="pbadge"></span></div>
+        <div class="pphoto" onclick="selectPhoto(this)"><img src="assets/migoo-media/ui/food9.jpg" alt=""><span class="pbadge"></span></div>
+        <div class="pphoto" onclick="selectPhoto(this)"><img src="assets/migoo-media/ui/food10.jpg" alt=""><span class="pbadge"></span></div>
+        <div class="pphoto" onclick="selectPhoto(this)"><img src="assets/migoo-media/ui/food11.jpg" alt=""><span class="pbadge"></span></div>
+      </div>
+      <div class="picker-foot"><div class="bar"></div></div>
+    </div>
+  </div>
+
+  <!-- ============ TEMPLATE CREATE PANEL (Make similar) ============ -->
+  <div id="tplPanel">
+    <div class="tp-scrim" onclick="tpScrimTap()"></div>
+    <div class="tp-sheet">
+      <div class="tp-title" id="tpTitle">Choose a Photo</div>
+      <div class="tp-field">
+        <div class="tp-thumbs" id="tpThumbs"></div>
+        <div class="tp-text" id="tpText" contenteditable="true" spellcheck="false" onclick="showTpKbd()"></div>
+        <div class="tp-controls">
+          <div class="tp-pills" id="tpPills"></div>
+          <img class="tp-mic" src="assets/migoo-media/ui/mic.png" alt="">
+          <img class="tp-send" src="assets/migoo-media/ui/send.png" onclick="createFromPanel()" alt="">
+        </div>
+      </div>
+      <div class="tp-create" onclick="createFromPanel()">Create</div>
+      <div class="tp-foot"><div class="bar"></div></div>
+      <div class="tp-menu" id="tpMenu"></div>
+    </div>
+    <img class="tp-kbd" src="assets/migoo-media/ui/keyboard.png" alt="">
+  </div>
+
+  <!-- ============ ALBUM PICKER (full overlay) ============ -->
+  <div id="album">
+    <div class="status">
+      <span class="time">9:41</span>
+      <span class="ic">
+        <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="0.8" fill="#081021"/><rect x="5" y="5" width="3" height="7" rx="0.8" fill="#081021"/><rect x="10" y="2" width="3" height="10" rx="0.8" fill="#081021"/><rect x="15" y="0" width="3" height="12" rx="0.8" fill="#081021"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12"><circle cx="8" cy="10.5" r="1.4" fill="#081021"/><path d="M4.2 7.5A5.4 5.4 0 018 6a5.4 5.4 0 013.8 1.5L13 6.3A7.4 7.4 0 008 4.3 7.4 7.4 0 003 6.3L4.2 7.5z" fill="#081021"/><path d="M1 4.5A10 10 0 018 2a10 10 0 017 2.5l1.2-1.2A11.8 11.8 0 008 .3 11.8 11.8 0 00.8 3.3L1 4.5z" fill="#081021"/></svg>
+        <svg width="26" height="13" viewBox="0 0 26 13"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#081021" stroke-opacity="0.35" fill="none"/><rect x="2" y="2" width="18" height="9" rx="2" fill="#081021"/><path d="M24 4v5c1-.4 1.5-1.3 1.5-2.5S25 4.4 24 4z" fill="#081021" fill-opacity="0.4"/></svg>
+      </span>
+    </div>
+    <div class="al-head">
+      <div class="al-x" onclick="closeAlbum()"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 4l12 12M16 4L4 16" stroke="#081021" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+      <div class="al-title">All Photos <span class="al-caret">⌄</span></div>
+    </div>
+    <div class="al-banner">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="#007AFF" stroke-width="1.6"/><circle cx="8" cy="10" r="1.6" fill="#007AFF"/><path d="m4 17 5-5 4 4 3-2.5 4 3.5" stroke="#007AFF" stroke-width="1.6" stroke-linejoin="round" fill="none"/></svg>
+      <span>Go to Settings to allow access to &ldquo;All Photos&rdquo; for easier photo selection.</span>
+      <div class="al-access">Access</div>
+    </div>
+    <div class="al-grid" id="alGrid">
+      <div class="al-add"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="18" height="13" rx="2.5" stroke="#1a1a1a" stroke-width="1.6"/><path d="M8.5 7l1.2-2.2h4.6L15.5 7" stroke="#1a1a1a" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="13.5" r="3.2" stroke="#1a1a1a" stroke-width="1.6"/></svg><span>Camera</span></div>
+      <div class="al-add"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#1a1a1a" stroke-width="2" stroke-linecap="round"/></svg><span>Add</span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/tpl/srcwoman.jpg"><img src="assets/migoo-media/tpl/srcwoman.jpg" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/ui/food1.jpg"><img src="assets/migoo-media/ui/food1.jpg" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/ui/food2.jpg"><img src="assets/migoo-media/ui/food2.jpg" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/ui/food3.jpg"><img src="assets/migoo-media/ui/food3.jpg" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/ui/food4.jpg"><img src="assets/migoo-media/ui/food4.jpg" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/ui/corgi.jpg"><img src="assets/migoo-media/ui/corgi.jpg" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/video/puppies.png"><img src="assets/migoo-media/video/puppies.png" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/video/portrait.png"><img src="assets/migoo-media/video/portrait.png" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/video/cafe.png"><img src="assets/migoo-media/video/cafe.png" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/ui/food5.jpg"><img src="assets/migoo-media/ui/food5.jpg" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/ui/food6.jpg"><img src="assets/migoo-media/ui/food6.jpg" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/video/eye.png"><img src="assets/migoo-media/video/eye.png" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/video/paint.png"><img src="assets/migoo-media/video/paint.png" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/ui/food7.jpg"><img src="assets/migoo-media/ui/food7.jpg" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/ui/food8.jpg"><img src="assets/migoo-media/ui/food8.jpg" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/video/doodle.png"><img src="assets/migoo-media/video/doodle.png" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/ui/food9.jpg"><img src="assets/migoo-media/ui/food9.jpg" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/ui/food10.jpg"><img src="assets/migoo-media/ui/food10.jpg" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/ui/food11.jpg"><img src="assets/migoo-media/ui/food11.jpg" alt=""><span class="al-ck"></span></div>
+      <div class="al-cell" onclick="toggleAlbum(this)" data-src="assets/migoo-media/tpl/srcman.jpg"><img src="assets/migoo-media/tpl/srcman.jpg" alt=""><span class="al-ck"></span></div>
+    </div>
+    <div class="al-foot" id="alFoot">
+      <div class="al-sel" id="alSel"></div>
+      <div class="al-next" onclick="albumNext()">Next (<span id="alN">0</span>)</div>
+    </div>
+  </div>
+
+  <!-- ============ FRAME 7 : SENT CHAT ============ -->
+  <div id="f7">
+    <div class="status">
+      <span class="time">9:41</span>
+      <span class="ic">
+        <svg width="18" height="12" viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="0.8" fill="#081021"/><rect x="5" y="5" width="3" height="7" rx="0.8" fill="#081021"/><rect x="10" y="2" width="3" height="10" rx="0.8" fill="#081021"/><rect x="15" y="0" width="3" height="12" rx="0.8" fill="#081021"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12"><circle cx="8" cy="10.5" r="1.4" fill="#081021"/><path d="M4.2 7.5A5.4 5.4 0 018 6a5.4 5.4 0 013.8 1.5L13 6.3A7.4 7.4 0 008 4.3 7.4 7.4 0 003 6.3L4.2 7.5z" fill="#081021"/><path d="M1 4.5A10 10 0 018 2a10 10 0 017 2.5l1.2-1.2A11.8 11.8 0 008 .3 11.8 11.8 0 00.8 3.3L1 4.5z" fill="#081021"/></svg>
+        <svg width="26" height="13" viewBox="0 0 26 13"><rect x="0.5" y="0.5" width="22" height="12" rx="3.5" stroke="#081021" stroke-opacity="0.35" fill="none"/><rect x="2" y="2" width="18" height="9" rx="2" fill="#081021"/><path d="M24 4v5c1-.4 1.5-1.3 1.5-2.5S25 4.4 24 4z" fill="#081021" fill-opacity="0.4"/></svg>
+      </span>
+    </div>
+    <div class="nav-title">Migoo</div>
+    <div class="chat">
+      <div class="m-img" id="f7imgs"></div>
+      <div class="m-bubble" id="f7text">Dreamy neon lighting, glittered makeup, and moody cinematic vibes</div>
+      <div class="m-typing" id="f7typing"><i></i><i></i><i></i></div>
+      <div class="m-result" id="f7result">
+        <div class="r-bubble">✅ Euphoria style dog image done</div>
+        <div class="r-row">
+          <img src="assets/migoo-media/results/r1.png" onclick="openViewer(this.src)" alt="">
+          <img src="assets/migoo-media/results/r2.png" onclick="openViewer(this.src)" alt="">
+          <img src="assets/migoo-media/results/r3.png" onclick="openViewer(this.src)" alt="">
+        </div>
+      </div>
+      <div class="m-result" id="f7vresult">
+        <div class="r-bubble">✅ Check your new video here</div>
+        <div class="v-card" onclick="openVideoViewer()">
+          <img id="vresPoster" src="assets/migoo-media/results/vid.jpg" alt="">
+          <div class="v-play"></div>
+          <div class="v-dur">00:15</div>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <div class="act primary" onclick="newCreation()"><img class="aicon" src="assets/migoo-media/ai-creation.svg" alt="">AI Creation</div>
+      <div class="act"><img class="aicon" src="assets/migoo-media/handle-mails.svg" alt="">Handle Mails</div>
+      <div class="act"><img class="aicon" src="assets/migoo-media/writing.svg" alt="">Writing</div>
+      <div class="act"><img class="aicon" src="assets/migoo-media/deep-analysis.svg" alt="">Deep Analysis</div>
+      <div class="act pill"><img class="aicon" src="assets/migoo-media/life-admin.svg" alt="">Life Admin</div>
+    </div>
+    <div class="inputbar">
+      <span class="ph">Ask migoo</span>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 11.4336C18.5523 11.4336 19 11.8813 19 12.4336C19 15.7584 16.3266 18.3772 13 18.8203V19.7148H14.1436C14.6956 19.7151 15.1436 20.1627 15.1436 20.7148C15.1436 21.267 14.6956 21.7146 14.1436 21.7148H9.85742C9.30514 21.7148 8.85742 21.2671 8.85742 20.7148C8.85742 20.1626 9.30514 19.7148 9.85742 19.7148H11V18.8203C7.67339 18.3772 5 15.7584 5 12.4336C5 11.8813 5.44772 11.4336 6 11.4336C6.55228 11.4336 7 11.8813 7 12.4336C7 14.8062 9.14675 16.8877 12 16.8877C14.8532 16.8877 17 14.8062 17 12.4336C17 11.8813 17.4477 11.4336 18 11.4336ZM12.001 1.57031C14.4467 1.57039 16.4297 3.55324 16.4297 5.99902V10.9512C16.4297 13.397 14.4467 15.3798 12.001 15.3799C9.55514 15.3799 7.57227 13.397 7.57227 10.9512V5.99902C7.57227 3.55319 9.55514 1.57031 12.001 1.57031ZM12.001 3.57031C10.6597 3.57031 9.57227 4.65776 9.57227 5.99902V10.9512C9.57227 12.2924 10.6597 13.3799 12.001 13.3799C13.3422 13.3798 14.4297 12.2924 14.4297 10.9512V5.99902C14.4297 4.65781 13.3422 3.57039 12.001 3.57031Z" fill="#1F1F1F"/></svg>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="7" y="11" width="10" height="2" rx="1" fill="#1F1F1F"/><rect x="13" y="7" width="10" height="2" rx="1" transform="rotate(90 13 7)" fill="#1F1F1F"/><circle cx="12" cy="12" r="9" stroke="#1F1F1F" stroke-width="2"/></svg>
+    </div>
+    <div class="botbar">
+      <div class="tabs">
+        <div class="tab">
+          <div class="logo24">
+            <img class="lg-face" src="assets/migoo-media/face.svg" alt="">
+            <img class="lg-eye" style="left:6.13px" src="assets/migoo-media/eye.svg" alt="">
+            <img class="lg-eye" style="left:13.06px" src="assets/migoo-media/eye.svg" alt="">
+          </div>
+        </div>
+        <div class="tab">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 5.5C4 4.7 4.7 4 5.5 4h13c.8 0 1.5.7 1.5 1.5v9c0 .8-.7 1.5-1.5 1.5H9l-4 3.5V5.5Z" stroke="#C9CDD4" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="tab">
+          <img src="assets/migoo-media/friend.svg" width="24" height="24" alt="">
+        </div>
+      </div>
+      <div class="home-ind"><div class="bar"></div></div>
+    </div>
+  </div>
+
+  <!-- ============ FULL-SCREEN IMAGE VIEWER ============ -->
+  <div id="imgViewer">
+    <div class="iv-top">
+      <div class="iv-close" onclick="closeViewer()">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M5 5L15 15M15 5L5 15" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <div class="iv-save" onclick="closeViewer()">Save</div>
+    </div>
+    <img id="ivImg" src="" alt="">
+    <div class="iv-play"></div>
+  </div>
+
+ </div>
+</div>
+
+<script>
+  const f2=document.getElementById('f2'), f3=document.getElementById('f3'), scrim=document.getElementById('scrim');
+  function openSheet(){ scrim.classList.add('show'); f2.classList.add('show'); }
+  function closeSheet(){ f2.classList.remove('show'); scrim.classList.remove('show'); }
+  function openDetail(el){
+    if(el){
+      window._curNoText=!!el.getAttribute('data-notext');
+      var img=el.getAttribute('data-img');
+      document.querySelector('#f3 .detail-img').src=img;
+      document.querySelector('#f3 .ttl').textContent=el.getAttribute('data-title');
+      document.querySelector('#f3 .promptbox p').textContent=el.getAttribute('data-prompt');
+      var thumb=el.getAttribute('data-thumb');var te=document.querySelector('#f3 .promptbox .thumb');
+      if(thumb){te.onerror=function(){this.style.display='none';};te.style.display='';te.src=thumb;}else{te.removeAttribute('src');te.style.display='none';}
+    }
+    f3.classList.add('show');
+  }
+  function closeDetail(){ f3.classList.remove('show'); }
+  function bump(el){ el.style.transform='scale(0.97)'; setTimeout(()=>el.style.transform='',140); }
+
+  // ---- frame 4/5/6/7: use-template input flow ----
+  var IF=document.getElementById('inputFlow');
+  var selPhotos=[];
+  function curThumb(){var te=document.querySelector('#f3 .promptbox .thumb');return (te&&te.style.display!=='none'&&te.getAttribute('src'))||'';}
+  function useTemplateCore(text, thumb, hasSample){
+    document.getElementById('icText').textContent=text;
+    window._tplThumb=thumb||'';
+    window._hasSample=hasSample;
+    selPhotos=[]; refreshBadges(); renderImgs();
+    IF.className='show mode-kbd';
+  }
+  function useTemplate(){ window._genVideo=false; openTplPanel(document.querySelector('#f3 .promptbox p').textContent, (curThumb()?[curThumb()]:[]), window._curNoText); }
+  function useVideoTemplate(){ window._genVideo=true; window._vidPoster=(curVid.img||'assets/migoo-media/results/vid.jpg'); openTplPanel(document.getElementById('vdDesc').textContent, (curVid.samples||[]), curVid.notext); }
+  function openBlankInput(){ window._genVideo=false; useTemplateCore('', '', false); IF.classList.add('blank'); }
+  function setCreateType(el){ el.parentElement.querySelectorAll('.seg-opt').forEach(function(s){s.classList.remove('on');}); el.classList.add('on'); }
+  function renderImgs(){
+    var box=document.getElementById('icImgs');
+    if(selPhotos.length===0){
+      if(!window._hasSample){ box.style.display='none'; box.innerHTML=''; return; }
+      box.style.display='';
+      var t=window._tplThumb;
+      box.innerHTML='<div class="ic-thumb" onclick="openPicker()">'+(t?'<img src="'+t+'">':'')+'<div class="ic-sample"><img src="assets/migoo-media/ui/sample-frame.svg" alt=""><span>sample</span></div></div>';
+    } else {
+      box.style.display='';
+      box.innerHTML=selPhotos.map(function(src,i){return '<div class="ic-thumb"><img src="'+src+'"><span class="ic-x" onclick="removeSel('+i+')">×</span></div>';}).join('');
+    }
+  }
+  function setMediaMode(m){
+    var f2=document.getElementById('f2');
+    if(m==='video') f2.classList.add('vmode'); else f2.classList.remove('vmode');
+    var g=f2.querySelector('.grid-scroll'); if(g) g.scrollTop=0;
+  }
+  var curVid={};
+  function openVideoDetail(el){
+    var thumbsAttr=el.getAttribute('data-thumbs');
+    var samples = thumbsAttr ? thumbsAttr.split(',').map(function(s){return s.trim();}).filter(Boolean) : (el.getAttribute('data-thumb') ? [el.getAttribute('data-thumb')] : []);
+    curVid={img:el.getAttribute('data-img'),title:el.getAttribute('data-title'),desc:el.getAttribute('data-desc'),thumb:el.getAttribute('data-thumb')||'',notext:!!el.getAttribute('data-notext'),samples:samples};
+    document.getElementById('vdPoster').src=curVid.img;
+    document.getElementById('vdTitle').textContent=curVid.title;
+    document.getElementById('vdDesc').textContent=curVid.desc;
+    var vt=document.getElementById('vdThumbs');
+    if(curVid.samples && curVid.samples.length){ vt.style.display='flex'; vt.innerHTML=curVid.samples.map(function(s){return '<img class="thumb" src="'+s+'" alt="">';}).join(''); }
+    else { vt.style.display='none'; vt.innerHTML=''; }
+    document.getElementById('vd').classList.add('show');
+  }
+  function closeVd(){ document.getElementById('vd').classList.remove('show'); }
+  function openPicker(){ IF.classList.add('show','mode-pick'); IF.classList.remove('mode-kbd'); }
+  function togglePanel(){ var pick=IF.classList.toggle('mode-pick'); IF.classList.toggle('mode-kbd', !pick); }
+  function showKbd(){ IF.classList.remove('mode-pick'); IF.classList.add('mode-kbd'); }
+  // ---- album full-screen picker ----
+  var albumSel=[];
+  var albumReturn='if';
+  function openAlbum(){ document.getElementById('album').classList.add('show'); }
+  function openAlbumFor(which, slotIdx){ albumReturn=which; window._tplSlotIdx=(slotIdx==null?-1:slotIdx); if(which==='tpl'){ albumSel=[]; } else { albumSel=selPhotos.slice(); } renderAlbum(); openAlbum(); }
+  function closeAlbum(){ document.getElementById('album').classList.remove('show'); }
+  function toggleAlbum(cell){
+    var src=cell.getAttribute('data-src');
+    var i=albumSel.indexOf(src);
+    if(i>=0) albumSel.splice(i,1); else albumSel.push(src);
+    renderAlbum();
+  }
+  function removeAlbum(e,src){ e.stopPropagation(); var i=albumSel.indexOf(src); if(i>=0) albumSel.splice(i,1); renderAlbum(); }
+  function renderAlbum(){
+    document.querySelectorAll('#alGrid .al-cell').forEach(function(c){
+      var idx=albumSel.indexOf(c.getAttribute('data-src'));
+      var ck=c.querySelector('.al-ck');
+      if(idx>=0){ c.classList.add('sel'); ck.textContent=(idx+1); }
+      else { c.classList.remove('sel'); ck.textContent=''; }
+    });
+    document.getElementById('album').classList.toggle('has-sel', albumSel.length>0);
+    document.getElementById('alSel').innerHTML=albumSel.map(function(s){return '<div class="ce"><img src="'+s+'" alt=""><span class="x" onclick="removeAlbum(event,\''+s+'\')">×</span></div>';}).join('');
+    document.getElementById('alN').textContent=albumSel.length;
+  }
+  function albumNext(){
+    var picked=albumSel.slice();
+    albumSel=[]; renderAlbum();
+    closeAlbum();
+    if(albumReturn==='tpl'){
+      var i=window._tplSlotIdx;
+      if(picked.length && i>=0 && tpSlots[i]){ tpSlots[i].cur=picked[picked.length-1]; tpSlots[i].replaced=true; }  // replace just this one slot
+      document.getElementById('tplPanel').classList.add('show');
+      renderTpThumbs();
+    } else {
+      if(picked.length) selPhotos=picked;
+      IF.classList.remove('mode-pick'); IF.classList.add('show','mode-kbd');
+      refreshBadges(); renderImgs();
+    }
+  }
+  // swipe up on the picker → pull out the full album
+  (function(){
+    var pk=document.querySelector('.picker'); if(!pk) return;
+    var sy=null, fired=false;
+    pk.addEventListener('pointerdown',function(e){ sy=e.clientY; fired=false; });
+    pk.addEventListener('pointermove',function(e){
+      if(sy===null||fired) return;
+      if(sy-e.clientY>36){ fired=true; albumReturn='if'; openAlbum(); }
+    });
+    function end(){ sy=null; }
+    pk.addEventListener('pointerup',end); pk.addEventListener('pointercancel',end); pk.addEventListener('pointerleave',end);
+  })();
+  function refreshBadges(){
+    document.querySelectorAll('.pphoto').forEach(function(p){
+      var s=p.querySelector('img').getAttribute('src');var n=selPhotos.indexOf(s);
+      if(n>=0){p.classList.add('sel');p.querySelector('.pbadge').textContent=(n+1);}
+      else{p.classList.remove('sel');p.querySelector('.pbadge').textContent='';}
+    });
+  }
+  function selectPhoto(el){
+    var src=el.querySelector('img').getAttribute('src');
+    var i=selPhotos.indexOf(src);
+    if(i>=0) selPhotos.splice(i,1); else selPhotos.push(src);
+    refreshBadges(); renderImgs();
+  }
+  function removeSel(i){ selPhotos.splice(i,1); refreshBadges(); renderImgs(); }
+  function closeInput(){ IF.className=''; }
+  // shared: show f7 chat with user message, then reveal image/video result after 3s
+  function runGeneration(txt, imgs, isVideo){
+    var mimg=document.getElementById('f7imgs');
+    if(imgs.length){ mimg.style.display='flex'; mimg.innerHTML=imgs.map(function(s){return '<img src="'+s+'" alt="">';}).join(''); }
+    else { mimg.style.display='none'; mimg.innerHTML=''; }
+    document.getElementById('f7text').textContent=txt;
+    IF.className=''; f3.classList.remove('show'); document.getElementById('vd').classList.remove('show'); f2.classList.remove('show'); f2.classList.remove('vmode'); scrim.classList.remove('show');
+    var tpl=document.getElementById('tplPanel'); if(tpl){ tpl.classList.remove('show'); tpl.classList.remove('kbd-up'); }
+    document.querySelector('.stage').classList.remove('tpl-open');
+    document.getElementById('f7').classList.add('show');
+    var typing=document.getElementById('f7typing'), result=document.getElementById('f7result'), vresult=document.getElementById('f7vresult'), chat=document.querySelector('#f7 .chat');
+    result.classList.remove('show'); vresult.classList.remove('show'); typing.style.display='flex';
+    if(chat) chat.scrollTop=chat.scrollHeight;
+    if(_genTimer) clearTimeout(_genTimer);
+    _genTimer=setTimeout(function(){
+      typing.style.display='none';
+      (isVideo?vresult:result).classList.add('show');
+      if(chat) chat.scrollTop=chat.scrollHeight;
+    },3000);
+  }
+  function sendMsg(){
+    var isVideo=!!window._genVideo;
+    var txt=(document.getElementById('icText').textContent||'').trim();
+    if(IF.classList.contains('blank')){
+      var on=document.querySelector('.ic-toggle .seg-opt.on');
+      isVideo=(on&&on.textContent.trim()==='Video');
+      var ct=isVideo?'Create video: ':'Create Image: ';
+      if(!txt) txt='a serene mountain lake at sunrise';
+      txt=ct+txt;
+    }
+    // user-added images take priority; otherwise fall back to the template's material image; otherwise text only
+    var imgs = selPhotos.length ? selPhotos.slice() : (window._tplThumb ? [window._tplThumb] : []);
+    runGeneration(txt, imgs, isVideo);
+  }
+
+  // ---- template create panel (Make similar) ----
+  function tplTitle(){ return 'Make Similar'; }   // unified "做同款" title, content-agnostic
+  // opt3: text field is always shown. Photo-driven templates point the user to add a photo; others just say "Describe changes".
+  var TP_HINTS={
+    'Wanderlust':'Add a photo and describe changes',
+    'Old school Shadow Puppetry':'Describe changes',
+    'Curious Little Bear':'Add a clear pet photo and describe changes',
+    'Ghibli Daydream':'Add a photo and describe changes',
+    'Oil Portrait':'Add a clear face photo and describe changes',
+    'Pixel Hero':'Add a photo and describe changes',
+    'Clay Mini World':'Add a photo and describe changes',
+    'Pose like Euphoria':'Add a clear face photo and describe changes',
+    'Sketch Self-portrait':'Add a clear face photo and describe changes',
+    'Fuzzy Little Monster':'Add a photo and describe changes',
+    'Cyberpunk Neon':'Add a photo and describe changes',
+    'Watercolor Wash':'Add a photo and describe changes',
+    'Pop Art Punch':'Add a clear face photo and describe changes',
+    'Retro Film 35mm':'Add a photo and describe changes',
+    'Rainy Café Mornings':'Describe changes',
+    'Fluffy Squad':'Add a clear pet photo and describe changes',
+    'Macro Eye':'Describe changes',
+    'Cinematic Portrait':'Describe changes',
+    'Paint Splash Portrait':'Describe changes',
+    'Doodle World':'Describe changes'
+  };
+  function tplHint(){
+    var title = window._genVideo ? ((curVid&&curVid.title)||'') : (document.querySelector('#f3 .ttl').textContent||'');
+    return TP_HINTS[title] || ((window._tplSamples&&window._tplSamples.length) ? 'Add a photo and describe changes' : 'Describe changes');
+  }
+  var TP_OPTS={ratio:['1:1','4:3','3:4','16:9','9:16'],duration:['5s','10s','15s'],quality:['480p','720p','1080p']};
+  var TP_LABEL={ratio:'Ratio',duration:'Duration',quality:'Quality'};
+  var tpVals={ratio:'4:3',duration:'10s',quality:'720p'};
+  var TP_STORE={};   // opt3: remembers last edits (text/photo/settings) per template
+  var tpSlots=[];    // composer photo slots: each {orig, cur, replaced} — supports multiple reference samples, each individually replaceable
+  function tplKey(){ return (window._genVideo ? (curVid&&curVid.title) : (document.querySelector('#f3 .ttl').textContent)) || 'tpl'; }
+  window._composer=true;   // default the Make-similar panel to the composer (ic-card) framework
+  function openTplPanel(text, samples, noText){
+    window._tplSamples = samples || [];
+    window._tplPrompt=(text||'').trim();
+    // opt3: text field is always shown (photo, when present, is added via the thumb above)
+    var noTxt=false;
+    window._tplNoText=noTxt;
+    window._tplKey=tplKey();
+    var saved=TP_STORE[window._tplKey];   // restore last edits for this template, if any
+    tpSlots = (saved && saved.slots) ? saved.slots.map(function(s){return {orig:s.orig,cur:s.cur,replaced:s.replaced};})
+                                     : window._tplSamples.map(function(s){return {orig:s,cur:s,replaced:false};});
+    tpVals = saved ? {ratio:saved.vals.ratio,duration:saved.vals.duration,quality:saved.vals.quality} : {ratio:'4:3',duration:'10s',quality:'720p'};
+    closeTpMenu();
+    document.getElementById('tplPanel').classList.remove('kbd-up');
+    document.querySelector('.tp-sheet').classList.toggle('composer', !!window._composer);
+    document.querySelector('.tp-sheet').classList.remove('tp-multi');  // chips stay inline with send (value-only, fits on one row)
+    var tt=document.getElementById('tpText');
+    tt.textContent = saved ? saved.text : '';  // restore last typed text (placeholder shows when empty)
+    if(noTxt){ tt.style.display='none'; }
+    else { tt.style.display=''; tt.setAttribute('data-ph', tplHint()); }
+    var title=document.getElementById('tpTitle');
+    title.style.display='';
+    title.textContent=tplTitle();
+    renderTpThumbs(); renderTpPills();
+    document.querySelector('.stage').classList.add('tpl-open');
+    document.getElementById('tplPanel').classList.add('show');
+    showTpKbd();   // opt3: raise the keyboard by default when the panel opens
+  }
+  function closeTplPanel(){
+    if(window._tplKey){ TP_STORE[window._tplKey]={ text:(document.getElementById('tpText').textContent||'').trim(), slots:tpSlots.map(function(s){return {orig:s.orig,cur:s.cur,replaced:s.replaced};}), vals:{ratio:tpVals.ratio,duration:tpVals.duration,quality:tpVals.quality} }; }
+    closeTpMenu(); document.querySelector('.stage').classList.remove('tpl-open'); var p=document.getElementById('tplPanel'); p.classList.remove('show'); p.classList.remove('kbd-up');
+  }
+  function showTpKbd(){ document.getElementById('tplPanel').classList.add('kbd-up'); var t=document.getElementById('tpText'); if(t.focus) t.focus(); }
+  function hideTpKbd(){ document.getElementById('tplPanel').classList.remove('kbd-up'); var t=document.getElementById('tpText'); if(t.blur) t.blur(); }
+  function tpScrimTap(){ closeTplPanel(); }   // opt3: tapping outside always closes the whole panel (no keyboard-down intermediate)
+  function toggleTplStyle(){ window._composer=!window._composer; document.querySelector('.tp-sheet').classList.toggle('composer', window._composer); document.getElementById('styleBtn').textContent = window._composer?'Layout: Composer':'Layout: Card'; }
+  function renderTpThumbs(){
+    var box=document.getElementById('tpThumbs');
+    if(!tpSlots.length){ box.style.display='none'; box.innerHTML=''; return; }
+    box.style.display='';
+    var multi=tpSlots.length>1;
+    box.innerHTML=tpSlots.map(function(slot,i){
+      if(slot.replaced){
+        // user-replaced this slot → show their photo, × reverts to the original sample
+        return '<div class="tp-thumb" onclick="openAlbumFor(\'tpl\','+i+')"><img src="'+slot.cur+'"><span class="tp-x" onclick="event.stopPropagation();revertTpSlot('+i+')">×</span></div>';
+      }
+      // still the reference sample → label sampleN (or just "sample" when there's one) + swap affordance
+      return '<div class="tp-thumb" onclick="openAlbumFor(\'tpl\','+i+')"><img src="'+slot.cur+'"><div class="tp-sample"><img src="assets/migoo-media/ui/sample-frame.svg" alt=""><span>sample'+(multi?(i+1):'')+'</span></div></div>';
+    }).join('');
+  }
+  function revertTpSlot(i){ if(tpSlots[i]){ tpSlots[i].cur=tpSlots[i].orig; tpSlots[i].replaced=false; renderTpThumbs(); } }
+  function renderTpPills(){
+    var dims=window._genVideo?['ratio','duration','quality']:['ratio'];
+    document.getElementById('tpPills').innerHTML=dims.map(function(d){
+      return '<div class="tp-pill" data-dim="'+d+'" onclick="togglePillMenu(this)"><span class="tp-pill-val">'+tpVals[d]+'</span><span class="tp-caret">⌄</span></div>';
+    }).join('');
+  }
+  function togglePillMenu(pill){
+    var menu=document.getElementById('tpMenu'), dim=pill.getAttribute('data-dim');
+    if(menu.classList.contains('show') && menu.getAttribute('data-dim')===dim){ closeTpMenu(); return; }
+    menu.setAttribute('data-dim',dim);
+    menu.innerHTML=TP_OPTS[dim].map(function(v){
+      return '<div class="tp-opt'+(v===tpVals[dim]?' on':'')+'" onclick="selectPillOpt(\''+dim+'\',\''+v+'\')"><span>'+v+'</span>'+(v===tpVals[dim]?'<span>✓</span>':'')+'</div>';
+    }).join('');
+    var sheet=pill.closest('.tp-sheet');
+    menu.style.left=pill.offsetLeft+'px';
+    menu.style.bottom=(sheet.clientHeight-pill.offsetTop+8)+'px';
+    menu.classList.add('show');
+  }
+  function selectPillOpt(dim,val){ tpVals[dim]=val; renderTpPills(); closeTpMenu(); }
+  function closeTpMenu(){ var m=document.getElementById('tpMenu'); if(m){ m.classList.remove('show'); m.removeAttribute('data-dim'); } }
+  function createFromPanel(){
+    var txt=(document.getElementById('tpText').textContent||'').trim();
+    if(!txt) txt=window._tplPrompt||'';
+    var imgs = tpSlots.map(function(s){return s.cur;}).filter(Boolean);
+    closeTplPanel();
+    runGeneration(txt, imgs, !!window._genVideo);
+  }
+  function closeF7(){ document.getElementById('f7').classList.remove('show'); }
+  function newCreation(){
+    // from the result chat, start a fresh creation: hide chat (sits above sheet z-index), reopen media sheet
+    if(_genTimer){ clearTimeout(_genTimer); _genTimer=null; }
+    document.getElementById('f7').classList.remove('show');
+    setMediaMode('image');
+    openSheet();
+  }
+  document.querySelector('#f7 .tabs .tab').onclick=closeF7;
+  var _genTimer=null;
+  function openViewer(src){ var v=document.getElementById('imgViewer'); v.classList.remove('video'); document.getElementById('ivImg').src=src; v.classList.add('show'); }
+  function openVideoViewer(){ var v=document.getElementById('imgViewer'); document.getElementById('ivImg').src=document.getElementById('vresPoster').src; v.classList.add('video','show'); }
+  function closeViewer(){ document.getElementById('imgViewer').classList.remove('show','video'); }
+  function resetDemo(){
+    if(_genTimer){ clearTimeout(_genTimer); _genTimer=null; }
+    closeViewer();
+    document.getElementById('f7').classList.remove('show');
+    var rs=document.getElementById('f7result'); if(rs) rs.classList.remove('show');
+    var vrs=document.getElementById('f7vresult'); if(vrs) vrs.classList.remove('show');
+    var tp=document.getElementById('f7typing'); if(tp) tp.style.display='flex';
+    IF.className='';
+    closeTplPanel();
+    f3.classList.remove('show');
+    document.getElementById('vd').classList.remove('show');
+    document.getElementById('album').classList.remove('show');
+    f2.classList.remove('show');
+    f2.classList.remove('vmode');
+    scrim.classList.remove('show');
+    selPhotos=[]; albumSel=[]; renderAlbum();
+    TP_STORE={}; window._tplKey=null;   // opt3: forget remembered edits on full reset
+    var g=document.querySelector('.grid-scroll'); if(g) g.scrollTop=0;
+  }
+</script>
+</body>
+</html>
